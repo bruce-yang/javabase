@@ -1,0 +1,54 @@
+package com.base.httpclient;
+
+import net.sf.json.JSONObject;
+
+import org.apache.log4j.Logger;
+
+/**
+ * 重载remoteCall
+ * 
+ * @author lucene_yang
+ * @email yangfuchao2010@gmail.com
+ * @date 2010-7-1下午12:15:32
+ * @project_name htmlparser
+ * 
+ */
+public class HttpRemoteUtil {
+	private static Logger log = Logger.getLogger(HttpRemoteUtil.class);
+	private static HttpRemoteCall httpRemoteCall = new HttpRemoteCall();
+
+	public static String remoteCall(String url) {
+		return httpRemoteCall.remoteCall(url, null, null, null);
+	}
+
+	public static String remoteCall(String url, String encoding) {
+		return httpRemoteCall.remoteCall(url, null, null, encoding);
+	}
+
+	public static String remoteCall(String url, String strParam, String encoding) {
+		return httpRemoteCall.remoteCall(url, null, strParam, encoding);
+	}
+
+	public static String remoteCall(String url, JSONObject param, String encoding) {
+		return httpRemoteCall.remoteCall(url, param, null, encoding);
+	}
+
+	public static String remoteCall(String url, JSONObject param, String strparam, String encoding) {
+		return httpRemoteCall.remoteCall(url, param, strparam, encoding);
+	}
+
+	public static String remoteCallByCURL(String url, JSONObject param) {
+		return httpRemoteCall.remoteCallByCURL(url, param);
+	}
+	public static String remoteCallByPost(String url, JSONObject param) {
+		return httpRemoteCall.remoteCallByPost(url, param,null);
+	}
+	public static String remoteCallDelete(String url) {
+		return httpRemoteCall.remoteCallDelete(url,null);
+	}
+	public static String remoteCallByGet(String url,JSONObject param) {
+		return httpRemoteCall.remoteCallByGet(url,param);
+	}
+	
+	
+}

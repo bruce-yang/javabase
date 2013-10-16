@@ -1,0 +1,148 @@
+package com.woyo.gamechannel.core.httpclient;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.lang.reflect.Field;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import net.sf.json.JSONObject;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.commons.httpclient.util.EncodingUtil;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.filter.HTTPDigestAuthFilter;
+import com.sun.jersey.client.apache.config.DefaultApacheHttpClientConfig;
+import com.woyo.gamechannel.core.conf.Configuation;
+import com.woyo.gamechannel.core.utils.BeanUtils;
+import com.woyo.gamechannel.pub.sms.MultivaluedMapImpl;
+
+public class HttpClientCall {
+	private static String ip="";
+	private static String port="";
+	public static String remoteCallZJZserver(String url, JSONObject param,String user,String pass) {
+//		ip=Configuation.getProxyConfigValue("proxy.ip");
+//		port=Configuation.getProxyConfigValue("proxy.port");
+//		DefaultApacheHttpClientConfig cc = new DefaultApacheHttpClientConfig();
+//		cc.getProperties().put(
+//				DefaultApacheHttpClientConfig.PROPERTY_PROXY_URI,ip+":"+port);
+		
+		Client client = Client.create();
+		client.setConnectTimeout(5000);
+		
+		client.addFilter(new HTTPDigestAuthFilter(user,pass));
+		MultivaluedMap formData = new MultivaluedMapImpl();
+		for (Iterator iterator = param.keys(); iterator.hasNext();) {
+			Object key = (Object) iterator.next();
+			String value = String.valueOf(param.get(key));
+			formData.add(key, value);
+		}
+		WebResource webResource = client.resource(url);
+		String response = webResource.queryParams(formData).accept(
+				MediaType.APPLICATION_JSON_TYPE).get(String.class);
+		return response;
+	}
+
+	public static String remoteCallByPostNew(String url, JSONObject object) {
+		String rs = "";
+		PostMethod method = null;
+		HttpClient httpClient = null;
+		try {
+			JSONObject jo = object;
+			String body = jo.toString();
+			httpClient = new HttpClient();
+			method = new PostMethod(url);
+			method.setRequestEntity(new StringRequestEntity(body,
+					"application/json", "utf-8"));
+			long start = System.currentTimeMillis();
+			httpClient.executeMethod(method);
+			rs = method.getResponseBodyAsString();
+			System.out.println("*************************"
+					+ (System.currentTimeMillis() - start));
+			method.releaseConnection();
+			return rs;
+		} catch (Exception e) {
+			e.printStackTrace();
+			method.releaseConnection();
+		}
+		return rs;
+	}
+
+	// public static String clientGet(String url, String param) {
+	// try {
+	// HttpClient httpClient = new HttpClient();
+	// GetMethod method = new GetMethod(url);
+	// if (param != null) {
+	// NameValuePair[] data = nameValueP(param);
+	// String queryString = EncodingUtil.formUrlEncode(data, "utf-8");
+	// method.setQueryString(queryString);
+	// }
+	// httpClient.executeMethod(method);
+	// return method.getResponseBodyAsString();
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	//
+	// return null;
+	// }
+
+	public static String remoteCallByPostNew2(String url, Object object,
+			String encoding) {
+		try {
+			List<Field> list = BeanUtils.getClassFields(object);
+			NameValuePair n[] = new NameValuePair[list.size()];
+			for (int i = 0; i < list.size(); i++) {
+				Field f = list.get(i);
+				String key = f.getName();
+				String value = BeanUtils.getProperty(object, key);
+				NameValuePair name = new NameValuePair(key, value);// 游戏名称
+				n[i] = name;
+			}
+
+			String queryString = EncodingUtil.formUrlEncode(n, "UTF-8");
+
+			URL u = new URL(url);
+			URLConnection connection = (URLConnection) u.openConnection();
+			connection.addRequestProperty("User-Agent", "hyp");
+			connection.setDoOutput(true);
+			PrintWriter out = new PrintWriter(connection.getOutputStream());
+			out.print(queryString);
+
+			out.close();
+
+			BufferedReader in;
+			try {
+				in = new BufferedReader(new InputStreamReader(connection
+						.getInputStream()));
+			} catch (FileNotFoundException exception) {
+				HttpURLConnection httpCon = (HttpURLConnection) connection;
+				InputStream err = httpCon.getErrorStream();
+				if (err == null)
+					throw exception;
+
+				in = new BufferedReader(new InputStreamReader(err));
+			}
+			StringBuffer response = new StringBuffer();
+			String line;
+			while ((line = in.readLine()) != null)
+				response.append(line + "\n");
+			in.close();
+			return response.toString();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "";
+	}
+}

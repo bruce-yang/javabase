@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/SNS3_GameChannel/!svn/ver/11659/Developing/games.woyo.com/src/com/woyo/gamechannel/core/httpclient
+END
+HttpPostEntityClient.java
+K 25
+svn:wc:ra_dav:version-url
+V 129
+/svn/SNS3_GameChannel/!svn/ver/11659/Developing/games.woyo.com/src/com/woyo/gamechannel/core/httpclient/HttpPostEntityClient.java
+END
+HttpRemoteCall.java
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/svn/SNS3_GameChannel/!svn/ver/11659/Developing/games.woyo.com/src/com/woyo/gamechannel/core/httpclient/HttpRemoteCall.java
+END
+HttpJsonClient.java
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/svn/SNS3_GameChannel/!svn/ver/11659/Developing/games.woyo.com/src/com/woyo/gamechannel/core/httpclient/HttpJsonClient.java
+END
+HttpRemoteUtil.java
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/svn/SNS3_GameChannel/!svn/ver/11659/Developing/games.woyo.com/src/com/woyo/gamechannel/core/httpclient/HttpRemoteUtil.java
+END
+HttpClientCall.java
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/svn/SNS3_GameChannel/!svn/ver/11659/Developing/games.woyo.com/src/com/woyo/gamechannel/core/httpclient/HttpClientCall.java
+END

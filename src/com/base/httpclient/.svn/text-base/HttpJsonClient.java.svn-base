@@ -1,0 +1,130 @@
+/**
+ * Copyright (c) 2005-2010 woyo.com
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ */
+package com.woyo.gamechannel.core.httpclient;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * @author soul soulmachine@gmail.com
+ * @version 1.0
+ * @since 1.0
+ */
+public class HttpJsonClient {
+	private static final Logger logger = LoggerFactory
+			.getLogger(HttpJsonClient.class);
+
+	/**
+	 * �����������get����
+	 * 
+	 * @param url
+	 *            URL��ַ
+	 * @param params
+	 *            get��Ĳ���key-value�ԣ�һ��һ������Ƕ��
+	 * @return ���������ص�JSON�ַ���Ϣ
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
+	public static String get(String url, Map<String, ?> params)
+			throws ClientProtocolException, IOException {
+		HttpClient httpclient = new DefaultHttpClient();
+		try {
+			logger.debug("begin to get url:" + url);
+			if (params != null && !(params.isEmpty())) {
+				List<NameValuePair> values = new ArrayList<NameValuePair>();
+				for (Map.Entry<String, ?> entity : params.entrySet()) {
+					BasicNameValuePair pare = new BasicNameValuePair(entity
+							.getKey(), entity.getValue().toString());
+					values.add(pare);
+
+				}
+				String str = URLEncodedUtils.format(values, "UTF-8");
+				if (url.indexOf("?") > -1) {
+					url += "&" + str;
+				} else {
+					url += "?" + str;
+				}
+			}
+			// logger.info("###################url=="+url);
+			logger.info(url);
+			HttpGet httpget = new HttpGet(url);
+			ResponseHandler<String> responseHandler = new BasicResponseHandler();
+			return httpclient.execute(httpget, responseHandler);
+		} finally {
+			httpclient.getConnectionManager().shutdown();
+		}
+	}
+public static void main(String[] args) throws ClientProtocolException, IOException {
+	logger.info(get("http://zone.woyo.com/service.php?userid=584573&method=getUserById&type=user", null));
+}
+	/**
+	 * �����������һ��http delete����
+	 * 
+	 * @param url
+	 *            Ҫ�����URL
+	 * @return ���������ص�JSON�ַ�
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
+	public static String delete(String url) throws ClientProtocolException,
+			IOException {
+		HttpClient httpclient = new DefaultHttpClient();
+		try {
+			HttpDelete httpget = new HttpDelete(url);
+			ResponseHandler<String> responseHandler = new BasicResponseHandler();
+			return httpclient.execute(httpget, responseHandler);
+		} finally {
+			httpclient.getConnectionManager().shutdown();
+		}
+	}
+
+	/**
+	 * �������post�ַ�
+	 * 
+	 * @param url
+	 *            Ҫ�����URL
+	 * @param data
+	 *            Ҫ���͵����
+	 * @return ���������ص���Ϣ
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
+	public static String post(String url, String data)
+			throws ClientProtocolException, IOException {
+		HttpClient httpclient = new DefaultHttpClient();
+		try {
+			HttpPost httpPost = new HttpPost(url);
+
+			if (data != null) {
+				ByteArrayEntity mult = new ByteArrayEntity(data
+						.getBytes("UTF-8"));
+				httpPost.setEntity(mult);
+			}
+
+			logger.debug("begin to post url:" + url);
+			ResponseHandler<String> responseHandler = new BasicResponseHandler();
+			return httpclient.execute(httpPost, responseHandler);
+		} finally {
+			httpclient.getConnectionManager().shutdown();
+		}
+	}
+}
