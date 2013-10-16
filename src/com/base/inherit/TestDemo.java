@@ -6,6 +6,7 @@ package com.base.inherit;
 //属性只能被隐藏，不能被覆盖
 //子类实例变量/静态变量可以隐藏父类的实例/静态变量，总结为变量可以交叉隐藏
 //因为静态方法不能被覆盖，如果在子类出现了同签名的就是隐藏，非静态方法称之为覆盖
+//当发生隐藏的时候，声明类型是什么类，就调用对应类的属性或者方法
 public class TestDemo {
 	public static void main(String[] args) {
 		new BaseSon();
