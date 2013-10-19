@@ -827,6 +827,7 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
             if (cleanSweep)
                 return false;
         }
+        
         // Resort to locking all segments
         for (int i = 0; i < segments.length; ++i)
             segments[i].lock();
